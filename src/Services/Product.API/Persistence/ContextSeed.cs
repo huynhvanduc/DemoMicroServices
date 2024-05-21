@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Product.API.Entities;
+﻿using Product.API.Entities;
 using ILogger = Serilog.ILogger;
 
 namespace Product.API.Persistence;

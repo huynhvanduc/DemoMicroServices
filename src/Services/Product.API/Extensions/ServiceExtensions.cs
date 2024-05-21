@@ -6,7 +6,6 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Product.API.Persistence;
 using Product.API.Repositories;
 using Product.API.Repositories.Interfaces;
-using System.Runtime.CompilerServices;
 
 namespace Product.API.Extensions;
 
@@ -20,6 +19,7 @@ public static class ServiceExtensions
         services.AddSwaggerGen();
         services.ConfigureProductDbContext(configuration);
         services.AddInfrastructureServices();
+        services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
         return services;
     }
     private static IServiceCollection ConfigureProductDbContext(this IServiceCollection services, IConfiguration configuration)
@@ -27,7 +27,7 @@ public static class ServiceExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnectionString");
         var builder = new MySqlConnectionStringBuilder(connectionString);
 
-        IServiceCollection serviceCollection = services.AddDbContext<ProductContext>(option => 
+        IServiceCollection serviceCollection = services.AddDbContext<ProductContext>(option =>
         option.UseMySql(builder.ConnectionString,
             ServerVersion.AutoDetect(builder.ConnectionString),
             e =>

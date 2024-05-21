@@ -1,4 +1,4 @@
-namespace Product2.API
+namespace WebApplication1
 {
     public class WeatherForecast
     {

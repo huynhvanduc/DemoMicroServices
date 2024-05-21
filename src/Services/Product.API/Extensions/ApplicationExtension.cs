@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace Product.API.Extensions;
+﻿namespace Product.API.Extensions;
 
 public static class ApplicationExtensions
 {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Product.API.Persistence;
 
 namespace Product.API.Extensions;
 

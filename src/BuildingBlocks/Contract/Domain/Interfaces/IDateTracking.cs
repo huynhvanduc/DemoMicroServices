@@ -2,6 +2,6 @@
 
 public interface IDateTracking
 {
-   DateTimeOffset CreatedTime { get; set; }
-   DateTimeOffset? LastModifiedTime { get; set; }
+    DateTimeOffset CreatedTime { get; set; }
+    DateTimeOffset? LastModifiedTime { get; set; }
 }

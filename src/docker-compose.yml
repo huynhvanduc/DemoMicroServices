@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   #database section
   orderdb:
@@ -32,6 +30,12 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.2
+
+  product.api:
+    image: ${DOCKER_REGISTRY-}product-api:${PLATFORM:-linux}-${TAG:-lastest}
+    build:
+      context: .
+      dockerfile: Services/Product.Api/Dockerfile
 
 #network section
 networks:

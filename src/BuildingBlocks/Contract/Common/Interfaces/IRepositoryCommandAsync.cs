@@ -1,6 +1,6 @@
 ﻿using Contract.Domain;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Contract.Common.Interfaces;
 

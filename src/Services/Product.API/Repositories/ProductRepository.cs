@@ -9,7 +9,7 @@ namespace Product.API.Repositories;
 
 public class ProductRepository : RepositoryCommandAsync<CatalogProduct, long, ProductContext>, IProductRepository
 {
-    public ProductRepository(ProductContext dbContext, IUnitOfWork<ProductContext> uniUnitOfWork): base(dbContext, uniUnitOfWork)
+    public ProductRepository(ProductContext dbContext, IUnitOfWork<ProductContext> uniUnitOfWork) : base(dbContext, uniUnitOfWork)
     {
     }
 
