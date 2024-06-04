@@ -1,4 +1,5 @@
 using Common.Logging;
+using Ordering.Infrastructure;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
@@ -10,6 +11,8 @@ try
 
     //logging
     builder.Host.UseSerilog(Serilogger.Configure);
+
+    builder.Services.AddInfrastructureServices(builder.Configuration);
 
     // Add services to the container.
 

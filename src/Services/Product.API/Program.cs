@@ -1,4 +1,5 @@
 using Common.Logging;
+using Product.API;
 using Product.API.Extensions;
 using Product.API.Persistence;
 using Serilog;

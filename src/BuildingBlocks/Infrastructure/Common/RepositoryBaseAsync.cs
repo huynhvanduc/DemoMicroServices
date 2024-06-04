@@ -54,4 +54,9 @@ public class RepositoryBaseAsync<T, K, TContext>
         return await FindByCondition(x => x.Id.Equals(id), false, includeProperties)
         .FirstOrDefaultAsync();
     }
+
+    public async Task<List<T>> FindAllAsync(bool trackChanges = false)
+    {
+        return await _dbContext.Set<T>().ToListAsync();
+    }
 }

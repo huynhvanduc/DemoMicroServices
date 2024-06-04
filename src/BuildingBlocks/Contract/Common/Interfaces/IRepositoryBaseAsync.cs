@@ -9,6 +9,7 @@ public interface IRepositoryBaseAsync<T, K, TContext>
     where TContext : DbContext
 {
     IQueryable<T> FindAll(bool trackChanges = false);
+    Task<List<T>> FindAllAsync(bool trackChanges = false);
 
     IQueryable<T> FindAll(bool trackChanges = false, params Expression<Func<T, object>>[] expressions);
 
