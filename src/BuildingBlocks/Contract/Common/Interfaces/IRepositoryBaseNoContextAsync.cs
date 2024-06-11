@@ -1,13 +1,11 @@
 ﻿using Contract.Domain;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq.Expressions;
 
 namespace Contract.Common.Interfaces;
 
-public interface IRepositoryBaseAsync<T, K, TContext> : IRepositoryBaseAsync<T, K>
+public interface IRepositoryBaseAsync<T, K>
     where T : EntityBase<K>
-    where TContext : DbContext
 {
     IQueryable<T> FindAll(bool trackChanges = false);
     Task<List<T>> FindAllAsync(bool trackChanges = false);
@@ -43,5 +41,3 @@ public interface IRepositoryBaseAsync<T, K, TContext> : IRepositoryBaseAsync<T, 
 
     Task DeleteListAsync(T entities);
 }
-
-

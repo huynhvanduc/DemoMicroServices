@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Customer.API.Repositories;
 
-public class CustomerRepository : RepositoryCommandAsync<Entities.Customer, int, CustomerContext>, ICustomerRepository
+public class CustomerRepository : RepositoryBaseAsync<Entities.Customer, int, CustomerContext>, ICustomerRepository
 {
     public CustomerRepository(CustomerContext dbContext
         , IUnitOfWork<CustomerContext> uniUnitOfWork) : base(dbContext, uniUnitOfWork)

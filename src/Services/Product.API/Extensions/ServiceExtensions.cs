@@ -41,7 +41,6 @@ public static class ServiceExtensions
 
     private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         => services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBaseAsync<,,>))
-        .AddScoped(typeof(IRepositoryCommandAsync<,,>), typeof(RepositoryCommandAsync<,,>))
         .AddScoped(typeof(IProductRepository), typeof(ProductRepository))
         .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
 }
