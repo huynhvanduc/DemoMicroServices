@@ -1,5 +1,6 @@
 using Common.Logging;
 using Ordering.API;
+using Ordering.API.Extensions;
 using Ordering.Application;
 using Ordering.Infrastructure;
 using Ordering.Infrastructure.Persistence;
@@ -15,6 +16,7 @@ try
     //logging
     builder.Host.UseSerilog(Serilogger.Configure);
 
+    builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddInfrastructureServices(builder.Configuration);
     builder.Services.AddApplicationServices();
 

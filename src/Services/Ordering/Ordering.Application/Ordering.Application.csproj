@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\V1\Orders\Commands\" />
+    <Folder Include="Features\V1\Orders\Commands\UpdateOrder\" />
     <Folder Include="Features\V1\Orders\EventHandlers\" />
     <Folder Include="Features\V2\Orders\Commands\" />
     <Folder Include="Features\V2\Orders\EventHandlers\" />
