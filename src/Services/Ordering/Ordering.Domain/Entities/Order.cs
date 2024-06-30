@@ -1,5 +1,5 @@
 ﻿using Contract.Domain;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Ordering.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,4 +32,5 @@ public class Order : EntityAuditBase<long>
     [Column(TypeName = "nvarchar(max)")]
     public string InvoiceAddress {get; set; }
 
+    public EOrderStatus Status { get; set; }
 }

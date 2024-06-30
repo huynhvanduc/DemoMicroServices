@@ -13,6 +13,18 @@ public class OrderRepository : RepositoryBaseAsync<Order, long, OrderContext>, I
     {
     }
 
+    public async Task<Order> CreateOrder(Order order)
+    {
+        await CreateAsync(order);
+        return order;
+    }
+
     public async Task<IEnumerable<Order>> GetOrdersByUserName(string name) 
         => await FindByCondition(x => x.UserName.Equals(name)).ToListAsync();
+
+    public async Task<Order> UpdateOrder(Order order)
+    {
+        await UpdateAsync(order);
+        return order;
+    }
 }

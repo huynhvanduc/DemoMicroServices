@@ -11,8 +11,8 @@ public class SerializeService : ISerializeService
     {
         return JsonConvert.SerializeObject(obj, new JsonSerializerSettings
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
             NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Converters = new List<JsonConverter>
             {
                 new StringEnumConverter

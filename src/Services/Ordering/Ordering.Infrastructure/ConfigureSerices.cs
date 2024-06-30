@@ -26,7 +26,6 @@ public static class ConfigureSerices
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
 
-        services.AddScoped(typeof(ISmtpEmailService), typeof(SmtpEmailService));
         return services;
     }
 }

@@ -1,4 +1,8 @@
 using Common.Logging;
+using Contract.Common.Interfaces;
+using Contract.Messages;
+using Infrastructure.Common;
+using Infrastructure.Messages;
 using Ordering.API;
 using Ordering.API.Extensions;
 using Ordering.Application;
@@ -19,6 +23,9 @@ try
     builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddInfrastructureServices(builder.Configuration);
     builder.Services.AddApplicationServices();
+    builder.Services.AddScoped<IMessageProducer, RabbitMQProducer>();
+    builder.Services.AddScoped<ISerializeService, SerializeService>();
+    builder.Services.ConfigureMassTransit();
 
     // Add services to the container.
 

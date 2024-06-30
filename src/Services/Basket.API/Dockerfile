@@ -10,6 +10,8 @@ WORKDIR /src
 COPY ["Services/Basket.API/Basket.API.csproj", "Services/Basket.API/"]
 COPY ["BuildingBlocks/Common.Logging/Common.Logging.csproj", "BuildingBlocks/Common.Logging/"]
 COPY ["BuildingBlocks/Contract/Contract.csproj", "BuildingBlocks/Contract/"]
+COPY ["BuildingBlocks/Shared/Shared.csproj", "BuildingBlocks/Shared/"]
+COPY ["BuildingBlocks/EventBus/EvenBus.Messages/EvenBus.Messages.csproj", "BuildingBlocks/EventBus/EvenBus.Messages/"]
 COPY ["BuildingBlocks/Infrastructure/Infrastructure.csproj", "BuildingBlocks/Infrastructure/"]
 RUN dotnet restore "Services/Basket.API/Basket.API.csproj"
 COPY . .

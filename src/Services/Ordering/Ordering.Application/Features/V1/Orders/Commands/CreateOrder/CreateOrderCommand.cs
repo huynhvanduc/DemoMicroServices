@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EvenBus.Messages.IntegrationEvent.Events;
 using MediatR;
 using Ordering.Application.Common.Mapping;
 using Ordering.Domain.Entities;
@@ -6,17 +7,12 @@ using Shared.SeedWork;
 
 namespace Ordering.Application.Features.V1.Orders;
 
-public class CreateOrderCommand : IRequest<ApiResult<long>>, IMapForm<Order>
+public class CreateOrderCommand : CreateOrUpdateCommand, IRequest<ApiResult<long>>, IMapForm<Order>
 {
     public string UserName { get; set; }
-    public decimal TotalPrice { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }    
-    public string EmailAddress { get; set; }
-    public string ShippingAddress { get; set; }
-    public string InvoiceAddress { get; set; }
-    public void Mapping (Profile profile)
-    {
+
+    public void Mapping(Profile profile) {
         profile.CreateMap<CreateOrderCommand, Order>();
+        profile.CreateMap<BasketCheckoutEvent, CreateOrderCommand>();
     }
 }

@@ -1,6 +1,8 @@
-﻿using Contract.Services;
+﻿using AutoMapper;
+using Contract.Messages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Ordering.Application.Common.Interfaces;
 using Ordering.Application.Common.Models;
 using Ordering.Application.Features.V1.Orders;
 using Shared.Services.Emails;
@@ -14,18 +16,27 @@ namespace Ordering.API.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly ISmtpEmailService _emailService;
+    private readonly IOrderRepository _orderRepository;
+    private readonly IMapper _mapper;
+    private readonly IMessageProducer _messageProducer;
 
-    public OrdersController(IMediator mediator, ISmtpEmailService emailService)
+    public OrdersController(IMediator mediator, 
+        IOrderRepository orderRepository,
+        IMapper mapper, 
+        IMessageProducer messageProducer)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+        _orderRepository = orderRepository;
+        _mapper = mapper;
+        _messageProducer = messageProducer;
     }
 
     public static class RouteNames
     {
         public const string GetOrders = nameof(GetOrders);
         public const string CreateOrder = nameof (CreateOrder);
+        public const string UpdateOrder = nameof (UpdateOrder);
+        public const string DeleteOrder = nameof (DeleteOrder);
     }
 
     [HttpGet("{name}", Name = RouteNames.GetOrders)]
@@ -37,9 +48,8 @@ public class OrdersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost(Name = RouteNames.CreateOrder)]
-    [ProducesResponseType(typeof(IEnumerable<OrderDto>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<OrderDto>> CreateOrder([FromBody]CreateOrderCommand command)
+    [HttpPost]
+    public async Task<ActionResult<OrderDto>> CreateOrder(CreateOrderCommand command)
     {
         var result = await _mediator.Send(command);
         return Ok(result);
@@ -55,7 +65,6 @@ public class OrdersController : ControllerBase
             Subject = "test",
             ToAddress = "vanduc9x98@gmail.com"
         };
-        await _emailService.SendEmailAsync(message);
         return Ok(message);
     }
 }
