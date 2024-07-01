@@ -21,6 +21,7 @@ public class RepositoryBaseAsync<T, K, TContext>
         _uniUnitOfWork = uniUnitOfWork;
     }
 
+    #region Get
     public IQueryable<T> FindAll(bool trackChanges = false) =>
     !trackChanges ? _dbContext.Set<T>().AsNoTracking() :
         _dbContext.Set<T>();
@@ -61,15 +62,28 @@ public class RepositoryBaseAsync<T, K, TContext>
         return await _dbContext.Set<T>().ToListAsync();
     }
 
-    public Task<IDbContextTransaction> BeginTransactionAsync()
+    #endregion 
+
+   
+
+    #region Create
+
+    public void Create(T entity)
     {
-        return _dbContext.Database.BeginTransactionAsync();
+        _dbContext.Set<T>().Add(entity);
     }
 
     public async Task<K> CreateAsync(T entity)
     {
         await _dbContext.Set<T>().AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
         return entity.Id;
+    }
+
+    public IList<K> CreateList(IEnumerable<T> entities)
+    {
+        _dbContext.Set<T>().AddRange(entities);
+        return entities.Select(x => x.Id).ToList();
     }
 
     public async Task<IList<K>> CreateListAsync(IEnumerable<T> entities)
@@ -78,18 +92,31 @@ public class RepositoryBaseAsync<T, K, TContext>
         return entities.Select(x => x.Id).ToList();
     }
 
-    public Task DeleteAsync(T entity)
+    #endregion
+
+    #region Delete
+    public void Delete(T entity) => _dbContext.Set<T>().Remove(entity);
+
+    public async Task DeleteAsync(T entity)
     {
         _dbContext.Set<T>().Remove(entity);
-        return Task.CompletedTask;
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task DeleteListAsync(T entities)
+    public void DeleteList(IEnumerable<T> entities) => _dbContext.Set<T>().RemoveRange(entities);
+    
+    public async Task DeleteListAsync(IEnumerable<T> entities)
     {
         _dbContext.Set<T>().RemoveRange(entities);
-        return Task.CompletedTask;
+        await _dbContext.SaveChangesAsync();
     }
+    #endregion
 
+    #region Transaction
+    public Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return _dbContext.Database.BeginTransactionAsync();
+    }
     public async Task EnTransactionAsync()
     {
         await SaveChangesAsync();
@@ -105,20 +132,44 @@ public class RepositoryBaseAsync<T, K, TContext>
     {
         return _uniUnitOfWork.CommitAsync();
     }
+    #endregion
 
-    public Task UpdateAsync(T entity)
+
+    #region Update
+    public void Update(T entity)
     {
         if (_dbContext.Entry(entity).State == EntityState.Unchanged)
-            return Task.CompletedTask;
+            return;
+
+        T exist = _dbContext.Set<T>().Find(entity.Id);
+        _dbContext.Entry(exist).CurrentValues.SetValues(entity);
+    }
+
+    public async Task UpdateAsync(T entity)
+    {
+        if (_dbContext.Entry(entity).State == EntityState.Unchanged)
+            return;
 
         T exist = _dbContext.Set<T>().Find(entity.Id);
         _dbContext.Entry(exist).CurrentValues.SetValues(entity);
 
-        return Task.CompletedTask;
+        await SaveChangesAsync();
     }
 
-    public Task UpdateListAsync(IEnumerable<T> entities)
+    public void UpdateList(IEnumerable<T> entities) => _dbContext.Set<T>().AddRange(entities);
+
+    public async Task UpdateListAsync(IEnumerable<T> entities)
     {
-        return _dbContext.Set<T>().AddRangeAsync(entities);
+        await _dbContext.Set<T>().AddRangeAsync(entities);
+        await SaveChangesAsync();
     }
+
+
+    public Task DeleteListAsync(T entities)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    #endregion
 }

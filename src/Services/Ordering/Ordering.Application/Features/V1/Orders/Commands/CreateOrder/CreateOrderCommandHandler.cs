@@ -30,7 +30,6 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Api
         _logger.Information($"BEGIN: {METHOD_NAME} - UserName: {request.UserName}");
         Order order = _mapper.Map<Order>(request);
         var addedOrder = _repository.CreateAsync(order);
-        await _repository.SaveChangesAsync();
         _logger.Information($"Order: {addedOrder.Id} is successfully created");
         return new ApiSuccessResult<long>(addedOrder.Id);
     }

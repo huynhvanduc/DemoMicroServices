@@ -21,9 +21,13 @@ public interface IRepositoryBaseAsync<T, K>
 
     Task<T> GetByIdAsync(K id, params Expression<Func<T, object>>[] includeProperties);
 
+    void Create(T entity);
+
     Task<K> CreateAsync(T entity);
 
     Task<IList<K>> CreateListAsync(IEnumerable<T> entities);
+
+    void Update(T entity);
 
     Task UpdateAsync(T entity);
 
@@ -36,6 +40,8 @@ public interface IRepositoryBaseAsync<T, K>
     Task EnTransactionAsync();
 
     Task RollbackTransactionAsync();
+
+    void Delete(T entity);
 
     Task DeleteAsync(T entity);
 
