@@ -14,12 +14,22 @@ public class RepositoryBaseNoContextAsync<T, K> :
         throw new NotImplementedException();
     }
 
+    public void Create(T entity)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<K> CreateAsync(T entity)
     {
         throw new NotImplementedException();
     }
 
     public Task<IList<K>> CreateListAsync(IEnumerable<T> entities)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Delete(T entity)
     {
         throw new NotImplementedException();
     }
@@ -80,6 +90,11 @@ public class RepositoryBaseNoContextAsync<T, K> :
     }
 
     public Task<int> SaveChangesAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Update(T entity)
     {
         throw new NotImplementedException();
     }

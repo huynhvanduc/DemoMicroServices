@@ -15,6 +15,7 @@ public class OrderDto : IMapForm<Order>
     public string EmailAddress { get; set; }
     public string ShippingAddress { get; set; }
     public string InvoiceAddress { get; set; }
+    public Guid CustomerNo { get; set; }
     public EOrderStatus Status { get; set; }
 
     public void Mapping(Profile profile)

@@ -2,7 +2,6 @@
 using EvenBus.Messages.IntegrationEvent.Events;
 using MassTransit;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Ordering.Application.Features.V1.Orders;
 using ILogger = Serilog.ILogger;
 

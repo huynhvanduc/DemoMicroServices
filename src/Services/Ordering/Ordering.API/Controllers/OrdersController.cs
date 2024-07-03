@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Common.Interfaces;
 using Ordering.Application.Common.Models;
 using Ordering.Application.Features.V1.Orders;
+using Ordering.Application.Features.V1.Orders.Commands;
 using Shared.Services.Emails;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -50,6 +51,13 @@ public class OrdersController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<OrderDto>> CreateOrder(CreateOrderCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return Ok(result);
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult<OrderDto>> Delete(DeleteOrderCommand command)
     {
         var result = await _mediator.Send(command);
         return Ok(result);

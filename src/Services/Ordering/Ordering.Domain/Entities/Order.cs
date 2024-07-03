@@ -23,8 +23,6 @@ public class Order : AuditableEventEntity<long>
     [Column(TypeName = "nvarchar(50)")]
     public string LastName { get; set; }
 
-    [Required]
-    [Column(TypeName = "nvarchar(50)")]
     public Guid CustomerNo { get; set; } = Guid.NewGuid();
 
     [Required]

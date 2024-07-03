@@ -65,8 +65,9 @@ public class BasketsController : ControllerBase
             return NotFound();
 
         var eventMessage = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
-        _publishEndpoint.Publish(eventMessage);
         eventMessage.TotalPrice = basket.TotalPrice;
+
+        await _publishEndpoint.Publish(eventMessage);
 
         await _basketRepository.DeleteBasketFromUserName(basketCheckout.UserName);
 
