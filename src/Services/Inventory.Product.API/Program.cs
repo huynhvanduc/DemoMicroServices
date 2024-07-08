@@ -1,22 +1,22 @@
 using Common.Logging;
+using Inventory.Product.API.Extensions;
 using Serilog;
 
-Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog(Serilogger.Configure);
 Log.Information("Starting Inventory API up");
 
 try
 {
-    var builder = WebApplication.CreateBuilder(args);
-
-    //logging
-    builder.Host.UseSerilog(Serilogger.Configure);
-
     // Add services to the container.
-
+    builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+    builder.Services.AddInfrastructureSerivces();
+    builder.Services.ConfigureMongDbClient();
 
     var app = builder.Build();
 
@@ -27,11 +27,15 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
 
     app.UseAuthorization();
 
+    app.MapDefaultControllerRoute();
+
     app.MapControllers();
+
+    app.MigrateDatabase();
 
     app.Run();
 }

@@ -6,7 +6,7 @@ public class PagingRequestParameters
     private int _pageNumber = 1;
     private int _pageSize = 10;
 
-    public int PageNumber
+    public int PageIndex
     {
         get => _pageNumber;
         set => _pageNumber = value < 1 ? 1 : value;
@@ -21,6 +21,4 @@ public class PagingRequestParameters
                 _pageSize = value > maxPageSize ? maxPageSize : value;
         }
     }
-
-    public string OrderBy { get; set; }
 }

@@ -23,4 +23,6 @@ public class CatalogProduct : EntityAuditBase<long>
     [Column(TypeName = "Decimal(12,2)")]
     public decimal Price { get; set; }
 
+    public int StockQuantity { get; set; }
+
 }
