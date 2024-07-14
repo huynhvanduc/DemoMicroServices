@@ -50,7 +50,7 @@ try
         await orderContextSeed.SeedAsync();
     }
 
-        app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
     app.UseAuthorization();
 

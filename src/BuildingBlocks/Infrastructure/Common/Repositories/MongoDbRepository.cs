@@ -1,0 +1,54 @@
+﻿using Contract.Domain;
+using Contract.Domain.Interfaces;
+using Infrastructure.Extensions;
+using MongoDB.Driver;
+using Shared.Configurations;
+using System.Linq.Expressions;
+
+namespace Infrastructure.Common;
+
+public class MongoDbRepository<T> : IMongodbRepositoryBase<T>
+    where T : MongoEntity
+{
+    private readonly IMongoDatabase Database;
+
+    public MongoDbRepository(IMongoClient client, MongDbSettings settings)
+    {
+        Database = client.GetDatabase(settings.DatabaseName);
+    }
+
+    public Task CreateAsync(T entitty)
+        => Collection.InsertOneAsync(entitty);
+
+    public Task DeleteAsync(string id)
+        => Collection.DeleteOneAsync(x => x.Id.Equals(id));
+
+    public IMongoCollection<T> FindAll(ReadPreference? readPreference = null)
+    {
+        var A = GetCollectionName();
+        return Database.WithReadPreference(readPreference ?? ReadPreference.Primary)
+        .GetCollection<T>(GetCollectionName());
+    }
+
+
+    protected virtual IMongoCollection<T> Collection =>
+        Database.GetCollection<T>(GetCollectionName());
+
+    public Task UpdateAsync(T entity)
+    {
+        Expression<Func<T, string>> func = f => f.Id;
+        var value = (string)entity.GetType()
+            .GetProperty(func.Body.ToString()
+            .Split(".")[1]).GetValue(entity, null);
+
+        var filter = Builders<T>.Filter.Eq(func, value);
+
+        return Collection.ReplaceOneAsync(filter, entity);
+    }
+
+    private static string GetCollectionName()
+    {
+        return (typeof(T).GetCustomAttributes(typeof(BsonCollectionAttribute), true)?
+            .FirstOrDefault() as BsonCollectionAttribute)?.CollectionName;
+    }
+}

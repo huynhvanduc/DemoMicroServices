@@ -134,6 +134,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - "CacheSettings:ConnectionString=basketdb:6379"
       - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+      - "GrpcSettings:StockUrl=http://inventory.grpc"
     depends_on:
       - basketdb
       - rabbitmq
@@ -153,4 +154,28 @@ services:
       - rabbitmq
     ports:
       - "6005:80"
+    restart: always
+
+  inventory.api:
+    container_name: inventory.api
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - "MongDbSettings:ConnectionString=mongodb://inventorydb:27017"
+    depends_on:
+      - inventorydb
+    ports:
+      - "6006:80"
+    restart: always
+
+  inventory.grpc:
+    container_name: inventory.grpc
+    environment: 
+      - aspnetcore_environment=development
+      - aspnetcore_urls=http://+:80
+      - "MongDbSettings:ConnectionString=mongodb://inventorydb:27017"
+    depends_on:
+      - inventorydb
+    ports:
+      - "6007:80"
     restart: always

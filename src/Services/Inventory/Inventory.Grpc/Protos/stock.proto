@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option csharp_namespace = "Inventory.Grpc.Protos";
+
+service StockProtoService {
+	rpc GetStock (GetStockRequest) returns (StockModels);
+}
+
+message GetStockRequest {
+	string itemNo = 1;
+}
+
+message StockModels {
+	int32 quantity = 1;
+}
