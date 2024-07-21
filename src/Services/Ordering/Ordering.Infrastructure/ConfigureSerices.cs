@@ -1,7 +1,5 @@
 ﻿using Contract.Common.Interfaces;
-using Contract.Services;
 using Infrastructure.Common;
-using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

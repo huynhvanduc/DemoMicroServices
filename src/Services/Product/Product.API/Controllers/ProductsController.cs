@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Product.API.Entities;
 using Product.API.Repositories.Interfaces;
@@ -43,6 +44,12 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto productDto)
     {
+        var productEntity = await _repository.GetProductByNo(productDto.No);
+        if (productEntity != null)
+        {
+            return BadRequest($"Product No {productEntity.No} is existed"); 
+        }
+
         var product = _mapper.Map<CatalogProduct>(productDto);
         await _repository.CreateProduct(product);
         await _repository.SaveChangesAsync();

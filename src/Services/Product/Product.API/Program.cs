@@ -10,6 +10,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
     //logging
     builder.Host.UseSerilog(Serilogger.Configure);
+    builder.Host.AddAppConfiguration();
     builder.Services.AddInfrastructure(builder.Configuration);
 
     var app = builder.Build();

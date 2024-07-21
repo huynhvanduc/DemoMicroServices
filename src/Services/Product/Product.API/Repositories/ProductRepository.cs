@@ -24,10 +24,8 @@ public class ProductRepository : RepositoryBaseAsync<CatalogProduct, long, Produ
 
     public async Task<CatalogProduct> GetProduct(long id) => await GetByIdAsync(id);
 
-    public async Task<CatalogProduct> GetProductByNo(string ProductNo)
-    {
-        return await FindByCondition(x => x.No.Equals(ProductNo)).SingleOrDefaultAsync();
-    }
+    public Task<CatalogProduct> GetProductByNo(string productNo) =>
+        FindByCondition(x => x.No.Equals(productNo)).SingleOrDefaultAsync();
 
     public async Task<IEnumerable<CatalogProduct>> GetProducts() => await FindAll().ToListAsync();
 

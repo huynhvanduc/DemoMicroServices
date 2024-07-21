@@ -6,12 +6,7 @@ public static class ApplicationExtensions
     {
         app.UseSwagger();
         app.UseSwaggerUI();
-
         app.UseRouting();
-        //app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
         app.UseEndpoints(enpoint =>
         {
             enpoint.MapDefaultControllerRoute();

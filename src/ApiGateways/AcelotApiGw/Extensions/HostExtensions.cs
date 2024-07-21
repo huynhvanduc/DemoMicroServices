@@ -12,14 +12,10 @@ public static class HostExtensions
         {
             var env = context.HostingEnvironment;
             config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                   .AddJsonFile("ocelot.Development.json", optional: false, reloadOnChange: true)
-                    .AddEnvironmentVariables();
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"ocelot.{env.EnvironmentName}.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
         });
-    }
-
-    public static void AddConfigureOcelot(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddOcelot(configuration);
     }
 
     public static void AddConfigCors(this IServiceCollection services, IConfiguration configuration)

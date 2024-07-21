@@ -12,20 +12,22 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.Host.AddAppConfigurations();
     builder.Host.UseSerilog(Serilogger.Configure);
 
-    // Add services to the container.
-    builder.Host.AddAppConfigurations();
-    builder.Services.AddConfigureService(builder.Configuration);
 
+    // Add services to the container.
+    builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddControllers();
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     
-    builder.Services.AddConfigureOcelot(builder.Configuration);
-
     builder.Services.AddConfigCors(builder.Configuration);
+
+    builder.Services.ConfigureOcelot(builder.Configuration);
+
+    builder.Services.ConfigureCors(builder.Configuration);
 
     var app = builder.Build();
 
@@ -38,9 +40,22 @@ try
         $"{builder.Environment.ApplicationName} v1"));
     }
 
-    app.UseCors("CorsPolicy");
+    //app.UseCors("CorsPolicy");
     app.UseMiddleware<ErrorWrappingMiddleware>();
-    app.UseHttpsRedirection();
+    app.UseAuthentication();
+    app.UseRouting();
+    app.UseAuthorization();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapGet("/", context =>
+        {
+            // await context.Response.WriteAsync($"Hello TEDU members! This is {builder.Environment.ApplicationName}");
+            context.Response.Redirect("swagger/index.html");
+            return Task.CompletedTask;
+        });
+    });
+
+    //app.UseHttpsRedirection();
     app.MapControllers();
     await app.UseOcelot();
     app.Run();
