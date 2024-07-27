@@ -2,10 +2,12 @@
 using Basket.API.Entities;
 using Basket.API.GrpcServices;
 using Basket.API.Repositories.Interfaces;
+using Basket.API.Services.Interfaces;
 using EvenBus.Messages.IntegrationEvent.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Shared.DTOs.Basket;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 
@@ -30,17 +32,18 @@ public class BasketsController : ControllerBase
 
     [HttpGet("{userName}")]
     [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetBasketByUserName([Required] string userName)
+    public async Task<IActionResult> GetBasket([Required] string userName)
     {
-        var result =  await _basketRepository.GetBasketByUserName(userName);
-        return Ok(result ?? new Cart());
+        var cart =  await _basketRepository.GetBasketByUserName(userName);
+        var result = _mapper.Map<CartDto>(cart) ?? new CartDto(userName); 
+        return Ok(result);
     }
 
     [HttpPost(Name = "UpdateBaset")]
-    [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> UpdateBaset([FromBody] Cart cart)
+    [ProducesResponseType(typeof(CartDto), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> UpdateBaset([FromBody] CartDto model)
     {
-        foreach(var item in cart.Items)
+        foreach(var item in model.Items)
         {
             var stock = await _stockItemGrpcService.GetStock(item.ItemNo);
             item.SetAvailableQuantity(stock.Quantity);
@@ -49,6 +52,8 @@ public class BasketsController : ControllerBase
         var options = new DistributedCacheEntryOptions()
             .SetAbsoluteExpiration(DateTimeOffset.UtcNow.AddHours(1))
             .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+        var cart = _mapper.Map<Cart>(model);
 
         var result = await _basketRepository.UpdateBasket(cart, options);
         return Ok(result);

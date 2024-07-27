@@ -18,7 +18,7 @@ public static class HostExtensions
     internal static IApplicationBuilder UseHangfireDashboard(this IApplicationBuilder app, IConfiguration configuration)
     {
         var configDashboard = configuration
-            .GetSection($"{nameof(HangfireSettings)}:{nameof(HangfireSettings.Dashboard)}")
+            .GetSection("HangFireSettings:Dashboard")
             .Get<DashboardOptions>();
 
         var hangfireSettings = configuration.GetSection(nameof(HangfireSettings))
@@ -28,11 +28,11 @@ public static class HostExtensions
 
         app.UseHangfireDashboard(hangfireRoute, new DashboardOptions
         {
-            //Authiruzation
+            Authorization = new[] {new AuthorizationFilter()},
             DashboardTitle = configDashboard.DashboardTitle,
             StatsPollingInterval = configDashboard.StatsPollingInterval,
             AppPath = configDashboard.AppPath,
-            IgnoreAntiforgeryToken = configDashboard.IgnoreAntiforgeryToken    
+            IgnoreAntiforgeryToken = true
         });
 
         return app;

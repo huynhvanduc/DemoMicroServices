@@ -1,4 +1,5 @@
 ﻿using EvenBus.Messages.IntegrationEvent.Events;
+using Infrastructure.Configurations;
 using Infrastructure.Extensions;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -11,6 +12,10 @@ public static class ServiceExtensions
 {
     internal static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
     {
+        var emailSettings = configuration.GetSection(nameof(SMTPEmailSetting))
+            .Get<SMTPEmailSetting>();
+        services.AddSingleton(emailSettings);
+
         var eventBusSettings = configuration.GetSection(nameof(EventBusSettings))
             .Get<EventBusSettings>();
         services.AddSingleton(eventBusSettings);

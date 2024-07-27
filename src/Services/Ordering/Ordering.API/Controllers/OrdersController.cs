@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contract.Messages;
+using Contract.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Common.Interfaces;
@@ -20,16 +21,19 @@ public class OrdersController : ControllerBase
     private readonly IOrderRepository _orderRepository;
     private readonly IMapper _mapper;
     private readonly IMessageProducer _messageProducer;
+    private readonly ISmtpEmailService _smtpEmailService;
 
     public OrdersController(IMediator mediator, 
         IOrderRepository orderRepository,
         IMapper mapper, 
-        IMessageProducer messageProducer)
+        IMessageProducer messageProducer,
+        ISmtpEmailService smtpEmailService)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         _orderRepository = orderRepository;
         _mapper = mapper;
         _messageProducer = messageProducer;
+        _smtpEmailService = smtpEmailService;
     }
 
     public static class RouteNames
@@ -73,6 +77,8 @@ public class OrdersController : ControllerBase
             Subject = "test",
             ToAddress = "vanduc9x98@gmail.com"
         };
+
+        _smtpEmailService.SendEmailAsync(message);
         return Ok(message);
     }
 }

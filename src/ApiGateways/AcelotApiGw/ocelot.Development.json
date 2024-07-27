@@ -256,6 +256,20 @@
           "Port": 5006
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/scheduled-jobs/send-email-reminder-checkout-order",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/scheduled-jobs/send-email-reminder-checkout-order",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5008
+        }
+      ]
     }
   ]
 }

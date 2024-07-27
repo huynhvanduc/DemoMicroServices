@@ -11,8 +11,12 @@ public class Cart
 
     public Cart(string userName)
     {
-
+        UserName = userName;
     }
 
     public decimal TotalPrice => Items.Sum(item => item.ItemPrice * item.Quantity);
+
+    public DateTimeOffset LastModifiedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    public string? JobId { get; set;  }
 }
