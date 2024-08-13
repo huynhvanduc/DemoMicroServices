@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using Contract.Messages;
 using Contract.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Ordering.Application.Common.Interfaces;
-using Ordering.Application.Common.Models;
 using Ordering.Application.Features.V1.Orders;
 using Ordering.Application.Features.V1.Orders.Commands;
+using Ordering.Application.Features.V1.Orders.Commands.DeleteByDocumentNo;
+using Ordering.Application.Features.V1.Orders.Queries.GetOrderById;
+using Shared.DTOs.Orders;
+using Shared.SeedWork;
 using Shared.Services.Emails;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -18,53 +19,70 @@ namespace Ordering.API.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IOrderRepository _orderRepository;
-    private readonly IMapper _mapper;
-    private readonly IMessageProducer _messageProducer;
     private readonly ISmtpEmailService _smtpEmailService;
+    private readonly IMapper _mappper;
 
-    public OrdersController(IMediator mediator, 
-        IOrderRepository orderRepository,
-        IMapper mapper, 
-        IMessageProducer messageProducer,
-        ISmtpEmailService smtpEmailService)
+    public OrdersController(IMediator mediator,
+        ISmtpEmailService smtpEmailService,
+        IMapper mappper)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _orderRepository = orderRepository;
-        _mapper = mapper;
-        _messageProducer = messageProducer;
         _smtpEmailService = smtpEmailService;
+        _mappper = mappper;
     }
 
     public static class RouteNames
     {
         public const string GetOrders = nameof(GetOrders);
+        public const string GetOrder = nameof(GetOrder);
         public const string CreateOrder = nameof (CreateOrder);
         public const string UpdateOrder = nameof (UpdateOrder);
         public const string DeleteOrder = nameof (DeleteOrder);
+        public const string DeleteByDocumentNo = nameof(DeleteByDocumentNo);
     }
 
     [HttpGet("{name}", Name = RouteNames.GetOrders)]
     [ProducesResponseType(typeof(IEnumerable<OrderDto>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByUserName([Required] string name)
     {
+
         var query = new GetOrdersQuery(name);
         var result = await _mediator.Send(query);
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<OrderDto>> CreateOrder(CreateOrderCommand command)
+    [HttpPost(Name = RouteNames.CreateOrder)]
+    [ProducesResponseType(typeof(ApiResult<long>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<OrderDto>> CreateOrder([FromBody]CreateOrderDto model)
     {
+        var command = _mappper.Map<CreateOrderCommand>(model);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
 
-    [HttpDelete]
-    public async Task<ActionResult<OrderDto>> Delete(DeleteOrderCommand command)
+    [HttpGet("{id:long}", Name = RouteNames.GetOrder)]
+    public async Task<ActionResult<OrderDto>> GetOrder([Required] long id)
     {
+        var query = new GetOrderByIdQuery(id);
+        var request = await _mediator.Send(query);
+        return Ok(request);
+
+    }
+
+    [HttpDelete("{id:long}", Name = RouteNames.DeleteOrder)]
+    public async Task<ActionResult> DeleteOrder([Required] long id)
+    {
+        var command = new DeleteOrderCommand(id);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpDelete("document-no/{documentNo}", Name = RouteNames.DeleteByDocumentNo)]
+    public async Task<ApiResult<bool>> DeleteOrderByDocumentNo([Required]string documentNo)
+    {
+        var command = new DeleteOrderByDocumentNoCommand(documentNo);
         var result = await _mediator.Send(command);
-        return Ok(result);
+        return result;
     }
 
 

@@ -21,6 +21,12 @@ public class InventorySerivce : MongoDbRepository<InventoryEntry>, IInventorySer
         _mapper = mapper;
     }
 
+    public async Task DeleteByDocumentNoAsync(string documentNo)
+    {
+        FilterDefinition<InventoryEntry> filter = Builders<InventoryEntry>.Filter.Eq(s => s.DocumentNo, documentNo);
+        await Collection.DeleteManyAsync(filter);
+    }
+
     public async Task<IEnumerable<InventoryEntryDto>> GetAllByItemNoAsync(string itemNo)
     {
         var entities = await FindAll()?
@@ -74,5 +80,39 @@ public class InventorySerivce : MongoDbRepository<InventoryEntry>, IInventorySer
         var result = _mapper.Map<InventoryEntryDto>(entity);
 
         return result;
+    }
+
+    public async Task<InventoryEntryDto> SalesItemAsync(string itemNo, SalesProductDto model)
+    {
+        var itemToAdd = new InventoryEntry(ObjectId.GenerateNewId().ToString())
+        {
+            ItemNo = itemNo,
+            ExternalDocumentNo = model.ExternalDocumentNo,
+            Quantity = model.Quantity * -1,
+            DocumentType = model.DocumentType
+        };
+
+        await CreateAsync(itemToAdd);
+        var result = _mapper.Map<InventoryEntryDto>(itemToAdd);
+        return result;
+    }
+
+    public async Task<string> SalesOrderAsync(SalesOrderDto model)
+    {
+        var documentNo = Guid.NewGuid().ToString();
+        foreach(var saleItem in model.SaleItems)
+        {
+            var itemToAdd = new InventoryEntry(ObjectId.GenerateNewId().ToString())
+            {
+                DocumentNo = documentNo,
+                ItemNo = saleItem.ItemNo,
+                ExternalDocumentNo = model.OrderNo,
+                Quantity = saleItem.Quantity * -1,
+                DocumentType = saleItem.DocumentType
+            };
+
+            await CreateAsync(itemToAdd);
+        }
+        return documentNo;
     }
 }

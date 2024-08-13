@@ -1,7 +1,6 @@
 ﻿using Contract.Common.Events;
-using Contract.Domain;
-using Ordering.Domain.Enums;
 using Ordering.Domain.OrderAgggregate.Events;
+using Shared.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,6 +8,8 @@ namespace Ordering.Domain.Entities;
 
 public class Order : AuditableEventEntity<long>
 {
+    public Guid DocumentNo { get; set; } = Guid.NewGuid();
+
     [Required]
     public string UserName { get; set; }
 

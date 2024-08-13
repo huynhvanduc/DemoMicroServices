@@ -67,14 +67,14 @@ public class BasketsController : ControllerBase
         return Ok(result);
     }
 
-    [Route("[action]")]
+    [Route("[action]/{userName}")]
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.Accepted)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<ActionResult> Checkout([FromBody] BasketCheckout basketCheckout) { 
-        var basket = await _basketRepository.GetBasketByUserName(basketCheckout.UserName);
+    public async Task<ActionResult> Checkout([Required] string userName, [FromBody] BasketCheckout basketCheckout) { 
+        var basket = await _basketRepository.GetBasketByUserName(userName);
 
-        if (basket == null)
+        if (basket == null || !basket.Items.Any())
             return NotFound();
 
         var eventMessage = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
